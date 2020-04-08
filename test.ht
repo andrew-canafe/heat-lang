@@ -1,0 +1,8 @@
+class fdsa {
+	func asdf () {
+		var a i32
+		for var b i32 := 1, 10, 1 {
+			var c i32
+		}
+	}
+}
