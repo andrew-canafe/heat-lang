@@ -40,12 +40,14 @@
 %token <i32> NAME
 %token FUNC VAR NL FOR IF ELIF ELSE WHILE ARROW MATCH CLASS IMPORT BREAK NEXT RETURN TO
 %token <i32> L1 L2 L3 L4 L5 L6 L7 L8
-%token '(' ')' '{' '}' '<' '>' CEQ '!' ','
-%left AND
-%left OR
+%token '(' ')' '{' '}' '<' '>' CEQ ','
+%left '|'
+%left '^'
+%left '&'
 %left LT GT EQ LTE GTE NEQ
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
+%left '~'
 %precedence PARS
 %nterm <i32> expression
 %nterm <i32> level
@@ -183,8 +185,10 @@ expressions:
 	expression
 
 expression:
-	expression AND expression { $$ = $1 && $3; } |
-	expression OR expression { $$ = $1 || $3; } |
+	expression '|' expression { $$ = $1 || $3; } |
+	expression '&' expression { $$ = $1 && $3; } |
+	expression '^' expression { $$ = $1 && !$3 || !$1 && $3; } |
+	'~' expression { $$ = !$2; } |
 	expression LT expression { if ($1 < $3) { $$ = 1; } else { $$ = 0; } } |
 	expression LTE expression { if ($1 <= $3) { $$ = 1; } else { $$ = 0; } } |
 	expression GT expression { if ($1 > $3) { $$ = 1; } else { $$ = 0; } } |

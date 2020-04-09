@@ -38,8 +38,10 @@ l8			{ return L8; }
 =			{ return EQ; }
 !=			{ return NEQ; }
 =>			{ return ARROW; }
-&&			{ return AND; }
-\|\|			{ return OR; }
+\|			{ return '|'; }
+\^			{ return '^'; }
+&			{ return '&'; }
+~			{ return '~'; }
 ,			{ return ','; }
 \+			{ return '+'; }
 -			{ return '-'; }

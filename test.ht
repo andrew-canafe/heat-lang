@@ -3,6 +3,7 @@ class fdsa {
 		var a i32
 		for var b i32 := 1, 10, 1 {
 			var c i32
+			c := 1 | 2 & ~3
 		}
 	}
 }
