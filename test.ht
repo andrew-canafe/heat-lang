@@ -8,12 +8,15 @@ class fdsa {
 	}
 }
 
+# This is a comment
 func main () {
 	var a f64
 	while 1 & 2 {
 		break l1
 		next l1
 	}
+
+	# This is another comment
 	match a {
 		1 => {
 			a := 1

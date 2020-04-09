@@ -63,8 +63,9 @@ ptr			{ return PTR; }
 [0-9]+			{ yylval.i32 = atoi(yytext); return VAL; }
 "[a-zA-Z0-9]+"		{ yylval.str = strdup(yytext); return VAL; }
 [a-zA-Z][a-zA-Z0-9]*	{ return NAME; }
-[ \t]			{ ; }
 \n			{ return NL; }
+\#.*			{ ; }
+[ \t]			{ ; }
 .			{ return yytext[0]; }
 
 %%
