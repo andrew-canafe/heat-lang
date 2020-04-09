@@ -139,7 +139,7 @@ elif:
 	ELIF expression '{' newlines { printf("elif\n"); } statements newlines '}'
 
 matchstatement:
-	MATCH expression '{' newlines { printf("match\n"); } lambdas newlines '}'
+	MATCH expression '{' newlines { printf("match\n"); } cases newlines '}'
 
 forstatement:
 	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
@@ -173,12 +173,12 @@ level:
 	L7 { $$ = 7; } |
 	L8 { $$ = 8; }
 
-lambdas:
-	lambdas newlines lambda |
-	lambda
+cases:
+	cases newlines case |
+	case
 
-lambda:
-	'(' expressions ')' ARROW '{' newlines statements newlines '}'
+case:
+	expressions ARROW '{' newlines statements newlines '}'
 
 expressions:
 	expressions ',' expression |
@@ -188,7 +188,6 @@ expression:
 	expression '|' expression { $$ = $1 || $3; } |
 	expression '&' expression { $$ = $1 && $3; } |
 	expression '^' expression { $$ = $1 && !$3 || !$1 && $3; } |
-	'~' expression { $$ = !$2; } |
 	expression LT expression { if ($1 < $3) { $$ = 1; } else { $$ = 0; } } |
 	expression LTE expression { if ($1 <= $3) { $$ = 1; } else { $$ = 0; } } |
 	expression GT expression { if ($1 > $3) { $$ = 1; } else { $$ = 0; } } |
@@ -199,6 +198,8 @@ expression:
 	expression '-' expression { $$ = $1 - $3; } |
 	expression '*' expression { $$ = $1 * $3; } |
 	expression '/' expression { $$ = $1 / $3; } |
+	expression '%' expression { $$ = $1 % $3; } |
+	'~' expression { $$ = !$2; } |
 	'(' expression ')' %prec PARS { $$ = $2; } |
 	VAL { $$ = $1; } |
 	NAME { $$ = $1; }

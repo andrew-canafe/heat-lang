@@ -1,9 +1,28 @@
 class fdsa {
 	func asdf () {
-		var a i32
+		var a i32 := 0
 		for var b i32 := 1, 10, 1 {
 			var c i32
 			c := 1 | 2 & ~3
+		}
+	}
+}
+
+func main () {
+	var a f64
+	while 1 & 2 {
+		break l1
+		next l1
+	}
+	match a {
+		1 => {
+			a := 1
+		}
+		2 => {
+			a := 2
+		}
+		3 => {
+			a := 3
 		}
 	}
 }
