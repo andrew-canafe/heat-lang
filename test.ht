@@ -1,22 +1,25 @@
+# This is a class
 class fdsa {
-	func asdf () {
-		var a i32 := 0
-		for var b i32 := 1, 10, 1 {
-			var c i32
+	func asdf() {
+		var {
+			i32 a := 0
+			i32 c := 0
+		}
+		for i32 b := 1, 10, 1 {
 			c := 1 | 2 & ~3
 		}
 	}
 }
 
-# This is a comment
-func main () {
-	var a f64
-	while 1 & 2 {
-		break l1
+# This is a function
+func main(i32 argc, ptr argv) {
+	var {
+		f64 a
+	}
+	while 1 & 2 | 5 ^ 5 {
+		break
 		next l1
 	}
-
-	# This is another comment
 	match a {
 		1 => {
 			a := 1
@@ -28,4 +31,12 @@ func main () {
 			a := 3
 		}
 	}
+	if a & b {
+		a := 0
+	}
+}
+
+# This is a variable
+var {
+	str hi
 }

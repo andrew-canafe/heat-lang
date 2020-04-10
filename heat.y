@@ -38,16 +38,17 @@
 %token <ptr> PTR
 %token <i32> VAL
 %token <i32> NAME
-%token FUNC VAR NL FOR IF ELIF ELSE WHILE ARROW MATCH CLASS IMPORT BREAK NEXT RETURN TO
+%token IMPORT CLASS FUNC VAR IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT NL
 %token <i32> L1 L2 L3 L4 L5 L6 L7 L8
-%token '(' ')' '{' '}' '<' '>' CEQ ','
+%token '(' ')' '{' '}' ',' CEQ
 %left '|'
 %left '^'
 %left '&'
 %left LT GT EQ LTE GTE NEQ
 %left '+' '-'
 %left '*' '/' '%'
-%left '~'
+%right '~' '$'
+%precedence ADDR
 %precedence PARS
 %nterm <i32> expression
 %nterm <i32> level
@@ -65,17 +66,18 @@ toplevelstatements:
 	toplevelstatement
 
 toplevelstatement:
-	import |
-	function |
-	class
+	importstatement |
+	funcstatement |
+	classstatement |
+	varstatement
 
-import:
+importstatement:
 	IMPORT { printf("import\n"); }
 
-function:
-	FUNC NAME '(' declarations ')' '{' newlines { printf("func\n"); } statements newlines '}'
+funcstatement:
+	FUNC NAME '(' { printf("func\n"); } declarations ')' '{' newlines statements newlines '}'
 
-class:
+classstatement:
 	CLASS NAME '{' newlines { printf("class\n"); } members newlines '}'
 
 members:
@@ -85,26 +87,27 @@ members:
 member:
 	declaration |
 	initialization |
-	function
+	funcstatement
 
 declarations:
 	declarations ',' declaration |
 	declaration |
 
-declaration:
-	VAR NAME type { printf("decl\n"); }
-
 assignment:
 	NAME CEQ expression { printf("asmt\n"); }
 	
+declaration:
+	type NAME { printf("decl\n"); }
+
 initialization:
-	VAR NAME type CEQ expression { printf("init\n"); }
+	type NAME CEQ expression { printf("init\n"); }
 
 statements:
 	statements newlines statement |
 	statement
 
 statement:
+	assignment |
 	varstatement |
 	ifstatement |
 	matchstatement |
@@ -115,9 +118,15 @@ statement:
 	returnstatement
 
 varstatement:
-	declaration |
-	assignment |
-	initialization
+	VAR '{' newlines vars newlines '}'
+
+vars:
+	vars newlines var |
+	var
+
+var:
+	initialization |
+	declaration
 
 ifstatement:
 	if elifs else |
@@ -126,7 +135,7 @@ ifstatement:
 	if
 
 if:
-    IF expression '{' newlines { printf("if\n"); } statements newlines '}'
+    IF expression '{' newlines { printf("if: %d\n", $2); } statements newlines '}'
 
 else:
     ELSE '{' newlines { printf("else\n"); } statements newlines '}'
@@ -145,11 +154,10 @@ forstatement:
 	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
 /*
 	FOR { printf("for\n"); } initialization ',' expression '{' newlines statements newlines '}' |
-	FOR { printf("for\n"); } initialization TO expression '{' newlines statements newlines '}'
 */
 
 whilestatement:
-	WHILE expression '{' newlines { printf("while\n"); } statements newlines '}'
+	WHILE expression '{' newlines { printf("while: %d\n", $2); } statements newlines '}'
 
 breakstatement:
 	BREAK level { printf("break l%d\n", $2); } |
@@ -185,9 +193,9 @@ expressions:
 	expression
 
 expression:
-	expression '|' expression { $$ = $1 || $3; } |
-	expression '&' expression { $$ = $1 && $3; } |
-	expression '^' expression { $$ = $1 && !$3 || !$1 && $3; } |
+	expression '|' expression { $$ = $1 | $3; } |
+	expression '&' expression { $$ = $1 & $3; } |
+	expression '^' expression { $$ = $1 ^ $3; } |
 	expression LT expression { if ($1 < $3) { $$ = 1; } else { $$ = 0; } } |
 	expression LTE expression { if ($1 <= $3) { $$ = 1; } else { $$ = 0; } } |
 	expression GT expression { if ($1 > $3) { $$ = 1; } else { $$ = 0; } } |
@@ -200,6 +208,8 @@ expression:
 	expression '/' expression { $$ = $1 / $3; } |
 	expression '%' expression { $$ = $1 % $3; } |
 	'~' expression { $$ = !$2; } |
+	'$' NAME { $$ = rand(); } |
+	'&' NAME %prec ADDR { $$ = rand(); } |
 	'(' expression ')' %prec PARS { $$ = $2; } |
 	VAL { $$ = $1; } |
 	NAME { $$ = $1; }
