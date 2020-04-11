@@ -8,99 +8,102 @@
 	void yyerror(const char * s);
 %}
 
+%code requires {
+	enum {
+		lv_t, name_t, bool_t, i8_t, i16_t, i32_t, i64_t, u8_t, u16_t, u32_t, u64_t, f32_t, f64_t, str_t, ptr_t
+	};
+
+	struct flex_struct {
+		int8_t type;
+		union {
+			int8_t bool;
+			char * name;
+			int8_t i8;
+			int16_t i16;
+			int32_t i32;
+			int64_t i64;
+			uint8_t u8;
+			uint16_t u16;
+			uint32_t u32;
+			uint64_t u64;
+			float f32;
+			double f64;
+			char * str;
+			void * ptr;
+			int8_t lv;
+		};
+	};
+}
+
 %union {
-	int8_t i8;
-	int16_t i16;
-	int32_t i32;
-	int64_t i64;
-	uint8_t u8;
-	uint16_t u16;
-	uint32_t u32;
-	uint64_t u64;
-	float f32;
-	double f64;
-	char * str;
-	void * ptr;
+	struct flex_struct flex;
 }
 
 %start heat
-%token <i8> I8
-%token <i16> I16
-%token <i32> I32
-%token <i64> I64
-%token <u8> U8
-%token <u16> U16
-%token <u32> U32
-%token <u64> U64
-%token <f32> F32
-%token <f64> F64
-%token <str> STR
-%token <ptr> PTR
-%token <i32> VAL
-%token <i32> NAME
-%token IMPORT CLASS FUNC VAR IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT NL
-%token <i32> L1 L2 L3 L4 L5 L6 L7 L8
-%token '(' ')' '{' '}' ',' CEQ
+%token IMPORT CLASS FUNC VAR ASSIGN IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT LF
+%token I8 I16 I32 I64 U8 U16 U32 U64 F32 F64 STR PTR
+%token ',' '{' '}'
 %left '|'
 %left '^'
 %left '&'
-%left LT GT EQ LTE GTE NEQ
+%left LT LTE GT GTE EQ NEQ
 %left '+' '-'
 %left '*' '/' '%'
 %right '~' '$'
+%token '(' ')'
 %precedence ADDR
 %precedence PARS
-%nterm <i32> expression
-%nterm <i32> level
+%token <flex> LV NAME VAL
+%nterm <flex> expression
 
 %%
 
 heat:
-	newlines toplevelstatements newlines |
-	newlines toplevelstatements |
-	toplevelstatements newlines |
-	toplevelstatements
+	newlines top_level_statements newlines |
+	newlines top_level_statements |
+	top_level_statements newlines |
+	top_level_statements
 
-toplevelstatements:
-	toplevelstatements newlines toplevelstatement |
-	toplevelstatement
+top_level_statements:
+	top_level_statements newlines top_level_statement |
+	top_level_statement
 
-toplevelstatement:
-	importstatement |
-	funcstatement |
-	classstatement |
-	varstatement
+top_level_statement:
+	import_statement |
+	func_statement |
+	class_statement |
+	var_statement
 
-importstatement:
-	IMPORT { printf("import\n"); }
+import_statement:
+	IMPORT VAL { if ($2.type == str_t) { printf("import: %s\n", $2.str); free($2.str); } else { printf("type error\n"); } }
 
-funcstatement:
+func_statement:
 	FUNC NAME '(' { printf("func\n"); } declarations ')' '{' newlines statements newlines '}'
 
-classstatement:
-	CLASS NAME '{' newlines { printf("class\n"); } members newlines '}'
+class_statement:
+	CLASS NAME '{' newlines { printf("class\n"); } class_members newlines '}'
 
-members:
-	members member |
-	member
+class_members:
+	class_members class_member |
+	class_member
 
-member:
+class_member:
 	declaration |
 	initialization |
-	funcstatement
+	func_statement
 
 declarations:
 	declarations ',' declaration |
 	declaration |
 
 assignment:
-	NAME CEQ expression { printf("asmt\n"); }
+	NAME ASSIGN expression { printf("asmt\n"); }
 	
 declaration:
-	type NAME { printf("decl\n"); }
+	var_type NAME { printf("decl\n"); }
 
 initialization:
-	type NAME CEQ expression { printf("init\n"); }
+	var_type NAME ASSIGN expression { printf("init\n"); }
 
 statements:
 	statements newlines statement |
@@ -108,16 +111,16 @@ statements:
 
 statement:
 	assignment |
-	varstatement |
-	ifstatement |
-	matchstatement |
-	forstatement |
-	whilestatement |
-	breakstatement |
-	nextstatement |
-	returnstatement
+	var_statement |
+	if_statement |
+	match_statement |
+	for_statement |
+	while_statement |
+	break_statement |
+	next_statement |
+	return_statement
 
-varstatement:
+var_statement:
 	VAR '{' newlines vars newlines '}'
 
 vars:
@@ -128,14 +131,14 @@ var:
 	initialization |
 	declaration
 
-ifstatement:
+if_statement:
 	if elifs else |
 	if elifs |
 	if else |
 	if
 
 if:
-    IF expression '{' newlines { printf("if: %d\n", $2); } statements newlines '}'
+    IF expression '{' newlines { if ($2.type == bool_t) { printf("if: %d\n", $2.bool ); } else { printf("type error\n"); } } statements newlines '}'
 
 else:
     ELSE '{' newlines { printf("else\n"); } statements newlines '}'
@@ -145,41 +148,31 @@ elifs:
 	elif
 
 elif:
-	ELIF expression '{' newlines { printf("elif\n"); } statements newlines '}'
+	ELIF expression '{' newlines { if ($2.type == bool_t) { printf("elif: %d\n", $2.bool); } } statements newlines '}'
 
-matchstatement:
+match_statement:
 	MATCH expression '{' newlines { printf("match\n"); } cases newlines '}'
 
-forstatement:
+for_statement:
 	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
 /*
-	FOR { printf("for\n"); } initialization ',' expression '{' newlines statements newlines '}' |
+	FOR { printf("for\n"); } initialization ',' expression '{' newlines statements newlines '}'
 */
 
-whilestatement:
-	WHILE expression '{' newlines { printf("while: %d\n", $2); } statements newlines '}'
+while_statement:
+	WHILE expression '{' newlines { if ($2.type == bool_t) { printf("while: %d\n", $2.bool); } else { printf("type error\n"); } } statements newlines '}'
 
-breakstatement:
-	BREAK level { printf("break l%d\n", $2); } |
+break_statement:
+	BREAK LV { printf("break: %d\n", $2.lv); } |
 	BREAK { printf("break\n"); }
 
-nextstatement:
-	NEXT level { printf("next l%d\n", $2); } |
+next_statement:
+	NEXT LV { printf("next: %d\n", $2.lv); } |
 	NEXT { printf("next\n"); }
 
-returnstatement:
+return_statement:
 	RETURN expression { printf("return\n"); } |
 	RETURN { printf("return\n"); }
-
-level:
-	L1 { $$ = 1; } |
-	L2 { $$ = 2; } |
-	L3 { $$ = 3; } |
-	L4 { $$ = 4; } |
-	L5 { $$ = 5; } |
-	L6 { $$ = 6; } |
-	L7 { $$ = 7; } |
-	L8 { $$ = 8; }
 
 cases:
 	cases newlines case |
@@ -193,33 +186,33 @@ expressions:
 	expression
 
 expression:
-	expression '|' expression { $$ = $1 | $3; } |
-	expression '&' expression { $$ = $1 & $3; } |
-	expression '^' expression { $$ = $1 ^ $3; } |
-	expression LT expression { if ($1 < $3) { $$ = 1; } else { $$ = 0; } } |
-	expression LTE expression { if ($1 <= $3) { $$ = 1; } else { $$ = 0; } } |
-	expression GT expression { if ($1 > $3) { $$ = 1; } else { $$ = 0; } } |
-	expression GTE expression { if ($1 >= $3) { $$ = 1; } else { $$ = 0; } } |
-	expression EQ expression { if ($1 == $3) { $$ = 1; } else { $$ = 0; } } |
-	expression NEQ expression { if ($1 != $3) { $$ = 1; } else { $$ = 0; } } |
-	expression '+' expression { $$ = $1 + $3; } |
-	expression '-' expression { $$ = $1 - $3; } |
-	expression '*' expression { $$ = $1 * $3; } |
-	expression '/' expression { $$ = $1 / $3; } |
-	expression '%' expression { $$ = $1 % $3; } |
-	'~' expression { $$ = !$2; } |
-	'$' NAME { $$ = rand(); } |
-	'&' NAME %prec ADDR { $$ = rand(); } |
-	'(' expression ')' %prec PARS { $$ = $2; } |
-	VAL { $$ = $1; } |
-	NAME { $$ = $1; }
+	expression '|' expression { /*$$ = $1 | $3;*/ } |
+	expression '&' expression { /*$$ = $1 & $3;*/ } |
+	expression '^' expression { /*$$ = $1 ^ $3;*/ } |
+	expression LT expression { /*if ($1 < $3) { $$ = 1; } else { $$ = 0; }*/ } |
+	expression LTE expression { /*if ($1 <= $3) { $$ = 1; } else { $$ = 0; }*/ } |
+	expression GT expression { /*if ($1 > $3) { $$ = 1; } else { $$ = 0; }*/ } |
+	expression GTE expression { /*if ($1 >= $3) { $$ = 1; } else { $$ = 0; }*/ } |
+	expression EQ expression { /*if ($1 == $3) { $$ = 1; } else { $$ = 0; }*/ } |
+	expression NEQ expression { /*if ($1 != $3) { $$ = 1; } else { $$ = 0; }*/ } |
+	expression '+' expression { /*$$ = $1 + $3;*/ } |
+	expression '-' expression { /*$$ = $1 - $3;*/ } |
+	expression '*' expression { /*$$ = $1 * $3;*/ } |
+	expression '/' expression { /*$$ = $1 / $3;*/ } |
+	expression '%' expression { /*$$ = $1 % $3;*/ } |
+	'~' expression { /*$$ = !$2;*/ } |
+	'$' NAME { /*$$ = *(long *)$2;*/ } |
+	'&' NAME %prec ADDR { /*$$ = (long)&$2;*/ } |
+	'(' expression ')' %prec PARS { /*$$ = $2;*/ } |
+	NAME { /*$$ = $1;*/ } |
+	VAL { /*$$ = $1;*/ }
 
-type:
+var_type:
 	I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64 | F32 | F64 | STR | PTR
 
 newlines:
-	newlines NL |
-	NL
+	newlines LF |
+	LF
 
 %%
 
