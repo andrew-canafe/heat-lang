@@ -10,13 +10,14 @@
 
 %code requires {
 	enum {
-		lv_t, name_t, bool_t, i8_t, i16_t, i32_t, i64_t, u8_t, u16_t, u32_t, u64_t, f32_t, f64_t, str_t, ptr_t
+		bool_t, lv_t, name_t, i8_t, i16_t, i32_t, i64_t, u8_t, u16_t, u32_t, u64_t, f32_t, f64_t, str_t, ptr_t
 	};
 
 	struct flex_struct {
 		int8_t type;
 		union {
-			int8_t bool;
+			int8_t bool; // Used for debugging only
+			int8_t lv;
 			char * name;
 			int8_t i8;
 			int16_t i16;
@@ -30,7 +31,6 @@
 			double f64;
 			char * str;
 			void * ptr;
-			int8_t lv;
 		};
 	};
 }
@@ -151,7 +151,7 @@ elif:
 	ELIF expression '{' newlines { if ($2.type == bool_t) { printf("elif: %d\n", $2.bool); } } statements newlines '}'
 
 match_statement:
-	MATCH expression '{' newlines { printf("match\n"); } cases newlines '}'
+	MATCH expression '{' newlines { printf("match\n"); } match_cases newlines '}'
 
 for_statement:
 	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
@@ -174,11 +174,11 @@ return_statement:
 	RETURN expression { printf("return\n"); } |
 	RETURN { printf("return\n"); }
 
-cases:
-	cases newlines case |
-	case
+match_cases:
+	match_cases newlines match_case |
+	match_case
 
-case:
+match_case:
 	expressions ARROW '{' newlines statements newlines '}'
 
 expressions:
