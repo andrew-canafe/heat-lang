@@ -131,6 +131,7 @@ var:
 	initialization |
 	declaration
 
+
 if_statement:
 	if elifs else |
 	if elifs |
@@ -154,9 +155,9 @@ match_statement:
 	MATCH expression '{' newlines { printf("match\n"); } match_cases newlines '}'
 
 for_statement:
-	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
+	FOR { printf("for\n"); } assignment ',' expression ',' expression '{' newlines statements newlines '}'
 /*
-	FOR { printf("for\n"); } initialization ',' expression '{' newlines statements newlines '}'
+	FOR { printf("for\n"); } assignment ',' expression '{' newlines statements newlines '}'
 */
 
 while_statement:
