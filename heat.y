@@ -128,7 +128,9 @@ vars:
 	var
 
 var:
+/*
 	initialization |
+*/
 	declaration
 
 
