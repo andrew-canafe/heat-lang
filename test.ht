@@ -20,7 +20,7 @@ func main(i32 argc, ptr argv) {
 	}
 	while 1 & 2 | 5 ^ 5 {
 		break
-		next l1
+		next 1
 	}
 	match a {
 		1 => {

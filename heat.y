@@ -10,27 +10,16 @@
 
 %code requires {
 	enum {
-		bool_t, lv_t, name_t, i8_t, i16_t, i32_t, i64_t, u8_t, u16_t, u32_t, u64_t, f32_t, f64_t, str_t, ptr_t
+		name, ival, fval, sval
 	};
 
 	struct flex_struct {
 		int8_t type;
 		union {
-			int8_t bool; // Used for debugging only
-			int8_t lv;
 			char * name;
-			int8_t i8;
-			int16_t i16;
-			int32_t i32;
-			int64_t i64;
-			uint8_t u8;
-			uint16_t u16;
-			uint32_t u32;
-			uint64_t u64;
-			float f32;
-			double f64;
-			char * str;
-			void * ptr;
+			int64_t ival;
+			double fval;
+			char * sval;
 		};
 	};
 }
@@ -75,7 +64,7 @@ top_level_statement:
 	var_statement
 
 import_statement:
-	IMPORT VAL { if ($2.type == str_t) { printf("import: %s\n", $2.str); free($2.str); } else { printf("type error\n"); } }
+	IMPORT VAL { if ($2.type == sval) { printf("import: %s\n", $2.sval); free($2.sval); } else { printf("type error\n"); } }
 
 func_statement:
 	FUNC NAME '(' { printf("func\n"); } declarations ')' '{' newlines statements newlines '}'
@@ -141,7 +130,7 @@ if_statement:
 	if
 
 if:
-    IF expression '{' newlines { if ($2.type == bool_t) { printf("if: %d\n", $2.bool ); } else { printf("type error\n"); } } statements newlines '}'
+    IF expression '{' newlines { if ($2.type == ival) { printf("if: %ld\n", $2.ival ); } else { printf("type error\n"); } } statements newlines '}'
 
 else:
     ELSE '{' newlines { printf("else\n"); } statements newlines '}'
@@ -151,7 +140,7 @@ elifs:
 	elif
 
 elif:
-	ELIF expression '{' newlines { if ($2.type == bool_t) { printf("elif: %d\n", $2.bool); } } statements newlines '}'
+	ELIF expression '{' newlines { if ($2.type == ival) { printf("elif: %ld\n", $2.ival); } } statements newlines '}'
 
 match_statement:
 	MATCH expression '{' newlines { printf("match\n"); } match_cases newlines '}'
@@ -163,14 +152,14 @@ for_statement:
 */
 
 while_statement:
-	WHILE expression '{' newlines { if ($2.type == bool_t) { printf("while: %d\n", $2.bool); } else { printf("type error\n"); } } statements newlines '}'
+	WHILE expression '{' newlines { if ($2.type == ival) { printf("while: %ld\n", $2.ival); } else { printf("type error\n"); } } statements newlines '}'
 
 break_statement:
-	BREAK LV { printf("break: %d\n", $2.lv); } |
+	BREAK VAL { /*if ($2.type == ival) {*/ printf("break: %ld\n", $2.ival); /*} else { printf("type error\n"); }*/ } |
 	BREAK { printf("break\n"); }
 
 next_statement:
-	NEXT LV { printf("next: %d\n", $2.lv); } |
+	NEXT VAL { /*if ($2.type == ival) {*/ printf("next: %ld\n", $2.ival); /*} else { printf("type error\n"); }*/ } |
 	NEXT { printf("next\n"); }
 
 return_statement:

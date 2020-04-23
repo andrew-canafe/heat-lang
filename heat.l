@@ -52,11 +52,10 @@ ptr			{ return PTR; }
 ~			{ return '~'; }
 \(			{ return '('; }
 \)			{ return ')'; }
-l[1-9][0-9]*		{ yylval.flex.type = lv_t; yylval.flex.lv = atoi(yytext+1); return LV; }
-[a-zA-Z][a-zA-Z0-9]*	{ yylval.flex.type = name_t; yylval.flex.str = strdup(yytext); return NAME; }
-[0-9]+			{ yylval.flex.type = i64_t; yylval.flex.i64 = atol(yytext); return VAL; }
-[0-9]+\.[0-9]+		{ yylval.flex.type = f64_t; yylval.flex.f64 = atof(yytext); return VAL; }
-\".*\"			{ yylval.flex.type = str_t; yylval.flex.str = strndup(yytext+1, strlen(yytext)-2); return VAL; }
+[a-zA-Z][a-zA-Z0-9]*	{ yylval.flex.type = name; yylval.flex.sval = strdup(yytext); return NAME; }
+[0-9]+			{ yylval.flex.type = ival; yylval.flex.ival = atol(yytext); return VAL; }
+[0-9]+\.[0-9]+		{ yylval.flex.type = fval; yylval.flex.fval = atof(yytext); return VAL; }
+\".*\"			{ yylval.flex.type = sval; yylval.flex.sval = strndup(yytext+1, strlen(yytext)-2); return VAL; }
 \n			{ return LF; }
 \#.*|[ \t]		{ ; }
 .			{ return yytext[0]; }
