@@ -11,7 +11,7 @@ Heat completely removes `do-while` loops and `goto` statements, as they are conf
 ### Coding style shall be stricly enforced by the language
 Heat replaces semicolons in favor of newlines, as missing semicolons only result in wasted time during the debugging process. Heat requires the use of a `var` block container when initializing variables. This separates variable initialization from the actual logic of the program, as the programmer will be inclined to create new `var` blocks sparingly.
 
-### Gives full power and responsibility to the programmer
+### Give full power and responsibility to the programmer
 Heat allows for unsafe type casting and unsafe memory access, similar to that of in C. Heat supports pointer arithmetic, but offsets are always calculated using one-byte sizes and never using the sizes of the pointed-to variables, as this gives the programmer more control over the individual bytes of array data structures. Heat supports multi-level `break` statements with depths that can be specified in the `break` statements themselves, as this gives more power to the language as a whole. Heat does not support garbage collection, for obvious performance reasons.
 
 ### Use different symbols for different things
