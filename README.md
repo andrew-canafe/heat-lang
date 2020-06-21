@@ -1,10 +1,10 @@
 # The Heat Programming Language
 Prototype for a simplistic programming language that I am currently designing. Inspiration was taken from many traditional and modern (OOP) languages, but mostly from C, Go, and Pascal.
 
-## Reserved Keywords (still under construction)
+## Reserved Keywords
 asm, break, case, class, elif, else, f32, f64, for, func, i128, i16, i32, i64, i8, if, import, match, next, ptr, return, str, u128, u16, u32, u64, u8, var, while
 
-## Language Philosophy (still under construction)
+## Language Philosophy
 ### The simplest solution is often times the best solution
 Heat completely removes `do-while` loops and `goto` statements, as they are confusing and seldom ever used. Heat replaces `switch` statements with `match` statements, which are similar to `switch` statements except that they do not use `break` to escape the body of the container. Heat replaces `else-if` keyword pairs with a single `elif` keyword, as it reduces the amount of characters a programmer needs to type. Heat uses a less complex for-loop syntax with a style similar to the syntax used in Lua. Heat does not use the `char` keyword, but instead uses a `str` keyword which is essentially a `char` pointer, for readability purposes.
 
