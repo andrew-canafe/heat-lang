@@ -15,7 +15,7 @@ Heat replaces semicolons in favor of newlines, as missing semicolons only result
 Heat allows for unsafe type casting and unsafe memory access, similar to that of in C. Heat supports pointer arithmetic, but offsets are always calculated using one-byte sizes and never using the sizes of the pointed-to variables, as this gives the programmer more control over the individual bytes of array data structures. Heat supports multi-level `break` statements with depths that can be specified in the `break` statements themselves, as this gives more power to the language as a whole. Heat does not support garbage collection, for obvious performance reasons.
 
 ### Use different symbols for different things
-Heat removes ambiguities between multiplication and indirection symbols by using the `$` symbol instead of the `*` symbol to act as the new indirection operator. However, Heat still uses the same `&` symbol for both the address-of operator and the bitwise-and operator, for aesthetic reasons.
+Heat removes ambiguities between multiplication and indirection symbols by using the `$` symbol instead of the `*` symbol to act as the new indirection operator. However, Heat still uses the same `&` symbol for both the address-of operator and the bitwise-and operator, for aesthetic purposes.
 
 ### All actions should be explicity defined
 Heat makes it mandatory for the initialization of variables to be explicit, and does not allow zero-by-default initialization. Heat requires a type to be associated with each variable and does not support `auto` specifiers, as they are confusing in the process of reading source code.
