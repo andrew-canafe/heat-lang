@@ -1,4 +1,4 @@
-# heat-lang
+# The Heat Programming Language
 Prototype for a simplistic programming language that I am currently designing. Inspiration was taken from many traditional and modern (OOP) languages, but mostly from C, Go, and Pascal.
 
 ## Reserved Keywords (still under construction)
