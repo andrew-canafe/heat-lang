@@ -4,8 +4,9 @@ import "random.ht"
 class fdsa {
 	func asdf() {
 		var {
-			i32 a
-			i32 c
+			i32 a := 0
+			i32 b := 0
+			i32 c := 0
 		}
 		for b := 1, 10, 1 {
 			c := 1 | 2 & ~3
@@ -16,7 +17,7 @@ class fdsa {
 # This is a function
 func main(i32 argc, ptr argv) {
 	var {
-		f64 a
+		f64 a := 0.0
 	}
 	while 1 & 2 | 5 ^ 5 {
 		break
@@ -36,9 +37,12 @@ func main(i32 argc, ptr argv) {
 	if 4 + 2 & 3 | 1 {
 		a := 0
 	}
+
+	# This is a function call
+	call()
 }
 
 # This is a variable
 var {
-	str hi
+	str hi := "Hello, world!"
 }

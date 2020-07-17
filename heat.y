@@ -77,19 +77,21 @@ class_members:
 	class_member
 
 class_member:
+/*
 	declaration |
+*/
 	initialization |
 	func_statement
 
 declarations:
 	declarations ',' declaration |
 	declaration |
-
-assignment:
-	NAME ASSIGN expression { printf("asmt\n"); }
 	
 declaration:
 	var_type NAME { printf("decl\n"); }
+
+assignment:
+	NAME ASSIGN expression { printf("asmt\n"); }
 
 initialization:
 	var_type NAME ASSIGN expression { printf("init\n"); }
@@ -107,21 +109,15 @@ statement:
 	while_statement |
 	break_statement |
 	next_statement |
-	return_statement
+	return_statement |
+	func_call
 
 var_statement:
 	VAR '{' newlines vars newlines '}'
 
 vars:
-	vars newlines var |
-	var
-
-var:
-/*
-	initialization |
-*/
-	declaration
-
+	vars newlines initialization |
+	initialization
 
 if_statement:
 	if elifs else |
@@ -147,9 +143,6 @@ match_statement:
 
 for_statement:
 	FOR { printf("for\n"); } assignment ',' expression ',' expression '{' newlines statements newlines '}'
-/*
-	FOR { printf("for\n"); } assignment ',' expression '{' newlines statements newlines '}'
-*/
 
 while_statement:
 	WHILE expression '{' newlines { if ($2.type == ival) { printf("while: %ld\n", $2.ival); } else { printf("type error\n"); } } statements newlines '}'
@@ -165,6 +158,14 @@ next_statement:
 return_statement:
 	RETURN expression { printf("return\n"); } |
 	RETURN { printf("return\n"); }
+
+func_call:
+	NAME '(' arglist ')' { printf("func call\n"); } |
+	NAME '(' ')' { printf("func call\n"); }
+
+arglist:
+	arglist ',' expression |
+	expression
 
 match_cases:
 	match_cases newlines match_case |
