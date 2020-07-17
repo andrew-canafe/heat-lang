@@ -56,7 +56,7 @@ ptr			{ return PTR; }
 [0-9]+			{ yylval.flex.type = ival; yylval.flex.ival = atol(yytext); return VAL; }
 [0-9]+\.[0-9]+		{ yylval.flex.type = fval; yylval.flex.fval = atof(yytext); return VAL; }
 \".*\"			{ yylval.flex.type = sval; yylval.flex.sval = strndup(yytext+1, strlen(yytext)-2); return VAL; }
-\n			{ return LF; }
+\n			{ return NL; }
 \#.*|[ \t]		{ ; }
 .			{ return yytext[0]; }
 

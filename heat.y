@@ -29,7 +29,7 @@
 }
 
 %start heat
-%token IMPORT CLASS FUNC VAR ASSIGN IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT LF
+%token IMPORT CLASS FUNC VAR ASSIGN IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT NL
 %token I8 I16 I32 I64 U8 U16 U32 U64 F32 F64 STR PTR
 %token ',' '{' '}'
 %left '|'
@@ -77,9 +77,6 @@ class_members:
 	class_member
 
 class_member:
-/*
-	declaration |
-*/
 	initialization |
 	func_statement
 
@@ -204,8 +201,8 @@ var_type:
 	I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64 | F32 | F64 | STR | PTR
 
 newlines:
-	newlines LF |
-	LF
+	newlines NL |
+	NL
 
 %%
 
