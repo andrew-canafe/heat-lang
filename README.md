@@ -1,5 +1,5 @@
 # The Heat Programming Language
-Prototype for a simplistic programming language that I am currently designing. Inspiration was taken from many traditional and modern (OOP) languages, but mostly from C, Go, and Pascal.
+Prototype for a simplistic programming language that I am currently designing. Inspiration was taken from many traditional and modern (OOP) languages, but mostly from C, Go, Lua, and Pascal.
 
 ## Reserved Keywords
 asm, break, case, class, elif, else, f32, f64, for, func, i128, i16, i32, i64, i8, if, import, match, next, ptr, return, str, u128, u16, u32, u64, u8, var, while
