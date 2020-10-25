@@ -99,6 +99,7 @@ statements:
 
 statement:
 	assignment |
+	initialization |
 	var_statement |
 	if_statement |
 	match_statement |
@@ -123,10 +124,10 @@ if_statement:
 	if
 
 if:
-    IF expression '{' newlines { if ($2.type == ival) { printf("if: %ld\n", $2.ival ); } else { printf("type error\n"); } } statements newlines '}'
+	IF expression '{' newlines { if ($2.type == ival) { printf("if: %ld\n", $2.ival ); } else { printf("type error\n"); } } statements newlines '}'
 
 else:
-    ELSE '{' newlines { printf("else\n"); } statements newlines '}'
+	ELSE '{' newlines { printf("else\n"); } statements newlines '}'
 
 elifs:
 	elifs elif |
@@ -139,7 +140,7 @@ match_statement:
 	MATCH expression '{' newlines { printf("match\n"); } match_cases newlines '}'
 
 for_statement:
-	FOR { printf("for\n"); } assignment ',' expression ',' expression '{' newlines statements newlines '}'
+	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
 
 while_statement:
 	WHILE expression '{' newlines { if ($2.type == ival) { printf("while: %ld\n", $2.ival); } else { printf("type error\n"); } } statements newlines '}'
