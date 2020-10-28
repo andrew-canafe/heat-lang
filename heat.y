@@ -111,7 +111,7 @@ statement:
 	func_call
 
 var_statement:
-	VAR '{' newlines vars newlines '}'
+	VAR NAME '{' newlines vars newlines '}'
 
 vars:
 	vars newlines initialization |

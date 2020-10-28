@@ -14,7 +14,7 @@ class fdsa {
 
 # This is a function
 func main(i32 argc, ptr argv) {
-	var {
+	var asdf {
 		f64 a := 0.0
 	}
 	while 1 & 2 | 5 ^ 5 {
@@ -41,6 +41,6 @@ func main(i32 argc, ptr argv) {
 }
 
 # This is a variable
-var {
+var qwer {
 	str hi := "Hello, world!"
 }
