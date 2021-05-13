@@ -18,7 +18,7 @@ Heat allows for unsafe type casting and unsafe memory access, similar to C. Heat
 Heat removes ambiguities between multiplication and indirection operators by using the `$` symbol instead of the `*` symbol for the  indirection operator. Heat removes ambiguities between bitwise-and and address-of operators by using the `@` symbol instead of the `&` symbol for the address-of operator. Heat uses the `:=` symbol for assignment and the `=` symbol for equality comparison to make assignment and equality comparison easily distinguishable.
 
 ### All actions should be explicity defined
-Heat makes it mandatory for the initialization of variables to be explicit and does not support zero-by-default initialization. Heat requires a type to be associated with each variable and does not support `auto` specifiers, as they are confusing in the process of reading source code.
+Heat makes it mandatory for the initialization of variables to be explicit and does not support zero-by-default initialization. Heat requires a type to be associated with each variable and does not support `auto` specifiers, as they are confusing when reading source code.
 
 ### Class inheritance is the root of all evil
 Heat does not support class inheritance, as it is difficult to maintain and results in excessive amounts of source code. However, Heat still uses classes for the purpose of class instantiation and source code modularity.
