@@ -24,4 +24,4 @@ Heat removes ambiguities between multiplication and indirection operators by usi
 Heat makes it mandatory for the initialization of variables to be explicit and does not support zero-by-default initialization. Heat requires a type to be associated with each variable and does not support `auto` type specifiers, as they are confusing and require the programmer to refer back to the initial declaration type.
 
 ### Class inheritance is the root of all evil
-Heat does not support class inheritance, as it is difficult to maintain and results in excessive "horizontal" code. However, Heat still uses classes for the purpose of class instantiation and source code modularity.
+Heat does not support class inheritance, as it is difficult to maintain and results in complex hierarchal dependencies. However, Heat still uses classes for the purpose of class instantiation and source code modularity.
