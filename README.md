@@ -6,7 +6,7 @@ asm, break, case, class, elif, else, f32, f64, for, func, i128, i16, i32, i64, i
 
 ## Language Philosophy
 ### The simplest solution is often times the best solution
-Heat completely removes do-while loops and `goto` statements, as they are confusing and seldom ever used. Heat completely removes the `&&` and `||` logical operators, as any sequence of logical operations can always be replicated using bitwise operations. Heat does not use a `char` keyword, but instead uses a `str` keyword which is equivalent to a `char` pointer in C. Strings are sufficient in almost all situations, and there is rarely any need to manipulate individual characters. Heat uses a less complex for-loop syntax with a style similar to Lua.
+Heat completely removes do-while loops and `goto` statements, as they are confusing and seldom ever used. Heat completely removes the `&&` and `||` logical operators, as any sequence of logical operations can always be replicated using bitwise operations. Heat does not use a `char` keyword, but instead uses a `str` keyword which is equivalent to a `char` pointer in C. However, Heat still provides functionality for char literals using single quotes. Heat uses a less complex for-loop syntax with a style similar to Lua.
 
 ### Less characters means less typos
 Heat replaces `else` and `if` keyword pairs with a single `elif` keyword, as it reduces the amount of characters the programmer needs to type. Similarly, Heat uses the `next` keyword instead of the `continue` keyword found in most programming languages. Heat replaces `switch` statements with `match` statements, which are similar to `switch` statements except that they do not use `break` to escape the body of the container and do not require inner `case` statements.
