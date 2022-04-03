@@ -13,7 +13,7 @@
 		name, ival, fval, sval
 	};
 
-	struct type_val {
+	struct typeAndVal {
 		int8_t type;
 		union {
 			char * name;
@@ -25,11 +25,11 @@
 }
 
 %union {
-	struct type_val tv;
+	struct typeAndVal tav;
 }
 
 %start heat
-%token IMPORT CLASS FUNC VAR ASSIGN IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT NL
+%token IMPORT CLASS FUNC VAR ASSIGN IF ELIF ELSE FOR WHILE MATCH ARROW RETURN BREAK NEXT
 %token I8 I16 I32 I64 U8 U16 U32 U64 F32 F64 STR PTR
 %token ',' '{' '}'
 %left '|'
@@ -42,8 +42,8 @@
 %token '(' ')'
 %precedence ADDR
 %precedence PARS
-%token <tv> LV NAME VAL
-%nterm <tv> expression
+%token <tav> LV NAME VAL
+%nterm <tav> expression
 
 %%
 
@@ -52,7 +52,7 @@ heat:
 
 top_level_statements:
 	top_level_statements top_level_statement |
-	top_level_statement
+	top_level_statement |
 
 top_level_statement:
 	import_statement |
@@ -71,7 +71,7 @@ class_statement:
 
 class_members:
 	class_members class_member |
-	class_member
+	class_member |
 
 class_member:
 	initialization |

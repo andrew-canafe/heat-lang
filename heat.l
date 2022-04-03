@@ -53,10 +53,10 @@ ptr			{ return PTR; }
 \(			{ return '('; }
 \)			{ return ')'; }
 \;			{ return ';'; }
-[a-zA-Z][a-zA-Z0-9]*	{ yylval.tv.type = name; yylval.tv.sval = strdup(yytext); return NAME; }
-[0-9]+			{ yylval.tv.type = ival; yylval.tv.ival = atol(yytext); return VAL; }
-[0-9]+\.[0-9]+		{ yylval.tv.type = fval; yylval.tv.fval = atof(yytext); return VAL; }
-\".*\"			{ yylval.tv.type = sval; yylval.tv.sval = strndup(yytext+1, strlen(yytext)-2); return VAL; }
+[a-zA-Z][a-zA-Z0-9]*	{ yylval.tav.type = name; yylval.tav.sval = strdup(yytext); return NAME; }
+[0-9]+			{ yylval.tav.type = ival; yylval.tav.ival = atol(yytext); return VAL; }
+[0-9]+\.[0-9]+		{ yylval.tav.type = fval; yylval.tav.fval = atof(yytext); return VAL; }
+\".*\"			{ yylval.tav.type = sval; yylval.tav.sval = strndup(yytext+1, strlen(yytext)-2); return VAL; }
 \#.*|[ \t\n\r]		{ ; }
 .			{ return yytext[0]; }
 

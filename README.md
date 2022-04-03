@@ -11,9 +11,6 @@ Heat completely removes do-while loops and `goto` statements, as they are confus
 ### Less characters means less typos
 Heat replaces `else` and `if` keyword pairs with a single `elif` keyword, as it reduces the amount of characters the programmer needs to type. Similarly, Heat uses the `next` keyword instead of the `continue` keyword found in most programming languages. Heat replaces `switch` statements with `match` statements, which are similar to `switch` statements except that they do not use `break` to escape the body of the container and do not require inner `case` statements.
 
-### Coding style shall be stricly enforced by the language
-Heat replaces the usage of semicolons with mandatory newlines to completely eliminate the common "missing semicolon" syntax error, thereby reducing the amount of time spent debugging. Additionally, using newlines instead of semicolons provides the added benefit of making the source code clearer and easier to read. Due to the nature of how the token scanner is implemented, Heat does not support one-line constructs such as one-line functions and one-line classes, as newlines are required for indicating the end of a statement.
-
 ### Give full power and responsibility to the programmer
 Heat allows for unsafe type casting and unsafe memory access, similar to C. Heat supports multi-level `break` statements with depths that can be specified in the `break` statements themselves, as this gives more power to the language as a whole. Heat does not support garbage collection nor runtime bounds checking, for obvious performance reasons.
 
