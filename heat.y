@@ -13,7 +13,7 @@
 		name, ival, fval, sval
 	};
 
-	struct flex_struct {
+	struct type_val {
 		int8_t type;
 		union {
 			char * name;
@@ -25,7 +25,7 @@
 }
 
 %union {
-	struct flex_struct flex;
+	struct type_val tv;
 }
 
 %start heat
@@ -42,35 +42,32 @@
 %token '(' ')'
 %precedence ADDR
 %precedence PARS
-%token <flex> LV NAME VAL
-%nterm <flex> expression
+%token <tv> LV NAME VAL
+%nterm <tv> expression
 
 %%
 
 heat:
-	newlines top_level_statements newlines |
-	newlines top_level_statements |
-	top_level_statements newlines |
 	top_level_statements
 
 top_level_statements:
-	top_level_statements newlines top_level_statement |
+	top_level_statements top_level_statement |
 	top_level_statement
 
 top_level_statement:
 	import_statement |
 	func_statement |
 	class_statement |
-	var_statement
+	initialization
 
 import_statement:
-	IMPORT VAL { if ($2.type == sval) { printf("import: %s\n", $2.sval); free($2.sval); } else { printf("type error\n"); } }
+	IMPORT VAL { if ($2.type == sval) { printf("import: %s\n", $2.sval); free($2.sval); } else { printf("type error\n"); } } ';'
 
 func_statement:
-	FUNC NAME '(' { printf("func\n"); } declarations ')' '{' newlines statements newlines '}'
+	FUNC NAME '(' { printf("func\n"); } declarations ')' '{' statements '}'
 
 class_statement:
-	CLASS NAME '{' newlines { printf("class\n"); } class_members newlines '}'
+	CLASS NAME '{' { printf("class\n"); } class_members '}'
 
 class_members:
 	class_members class_member |
@@ -88,19 +85,21 @@ declaration:
 	var_type NAME { printf("decl\n"); }
 
 assignment:
-	NAME ASSIGN expression { printf("asmt\n"); }
+	NAME ASSIGN expression ';' { printf("asmt\n"); }
 
 initialization:
-	var_type NAME ASSIGN expression { printf("init\n"); }
+	inline_initialization ';' { printf("init\n"); }
+
+inline_initialization:
+	var_type NAME ASSIGN expression { printf("inline init\n"); }
 
 statements:
-	statements newlines statement |
-	statement
+	statements statement |
+	statement |
 
 statement:
 	assignment |
 	initialization |
-	var_statement |
 	if_statement |
 	match_statement |
 	for_statement |
@@ -110,13 +109,6 @@ statement:
 	return_statement |
 	func_call
 
-var_statement:
-	VAR NAME '{' newlines vars newlines '}'
-
-vars:
-	vars newlines initialization |
-	initialization
-
 if_statement:
 	if elifs else |
 	if elifs |
@@ -124,57 +116,52 @@ if_statement:
 	if
 
 if:
-	IF expression '{' newlines { if ($2.type == ival) { printf("if: %ld\n", $2.ival ); } else { printf("type error\n"); } } statements newlines '}'
+	IF expression '{' { if ($2.type == ival) { printf("if: %ld\n", $2.ival ); } else { printf("type error\n"); } } statements '}'
 
 else:
-	ELSE '{' newlines { printf("else\n"); } statements newlines '}'
+	ELSE '{' { printf("else\n"); } statements '}'
 
 elifs:
 	elifs elif |
 	elif
 
 elif:
-	ELIF expression '{' newlines { if ($2.type == ival) { printf("elif: %ld\n", $2.ival); } } statements newlines '}'
+	ELIF expression '{' { if ($2.type == ival) { printf("elif: %ld\n", $2.ival); } } statements '}'
 
 match_statement:
-	MATCH expression '{' newlines { printf("match\n"); } match_cases newlines '}'
+	MATCH expression '{' { printf("match\n"); } match_cases '}'
 
 for_statement:
-	FOR { printf("for\n"); } initialization ',' expression ',' expression '{' newlines statements newlines '}'
+	FOR { printf("for\n"); } inline_initialization ',' expression ',' expression '{' statements '}'
 
 while_statement:
-	WHILE expression '{' newlines { if ($2.type == ival) { printf("while: %ld\n", $2.ival); } else { printf("type error\n"); } } statements newlines '}'
+	WHILE expression '{' { if ($2.type == ival) { printf("while: %ld\n", $2.ival); } else { printf("type error\n"); } } statements '}'
 
 break_statement:
-	BREAK VAL { /*if ($2.type == ival) {*/ printf("break: %ld\n", $2.ival); /*} else { printf("type error\n"); }*/ } |
-	BREAK { printf("break\n"); }
+	BREAK VAL { /*if ($2.type == ival) {*/ printf("break: %ld\n", $2.ival); /*} else { printf("type error\n"); }*/ } ';' |
+	BREAK ';' { printf("break\n"); }
 
 next_statement:
-	NEXT VAL { /*if ($2.type == ival) {*/ printf("next: %ld\n", $2.ival); /*} else { printf("type error\n"); }*/ } |
-	NEXT { printf("next\n"); }
+	NEXT VAL { /*if ($2.type == ival) {*/ printf("next: %ld\n", $2.ival); /*} else { printf("type error\n"); }*/ } ';' |
+	NEXT ';' { printf("next\n"); }
 
 return_statement:
-	RETURN expression { printf("return\n"); } |
-	RETURN { printf("return\n"); }
+	RETURN expression { printf("return\n"); } ';' |
+	RETURN ';' { printf("return\n"); }
 
 func_call:
-	NAME '(' arglist ')' { printf("func call\n"); } |
-	NAME '(' ')' { printf("func call\n"); }
-
-arglist:
-	arglist ',' expression |
-	expression
+	NAME '(' expressions ')' ';' { printf("func call\n"); }
 
 match_cases:
-	match_cases newlines match_case |
+	match_cases match_case |
 	match_case
 
 match_case:
-	expressions ARROW '{' newlines statements newlines '}'
+	expressions ARROW '{' statements '}'
 
 expressions:
 	expressions ',' expression |
-	expression
+	expression |
 
 expression:
 	expression '|' expression { /*$$ = $1 | $3;*/ } |
@@ -200,10 +187,6 @@ expression:
 
 var_type:
 	I8 | I16 | I32 | I64 | U8 | U16 | U32 | U64 | F32 | F64 | STR | PTR
-
-newlines:
-	newlines NL |
-	NL
 
 %%
 

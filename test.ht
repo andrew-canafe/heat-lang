@@ -1,46 +1,47 @@
-import "random.ht"
+import "random.ht";
 
 # This is a class
 class fdsa {
 	func asdf() {
-		i32 a := 0
-		i32 c := 0
+		i32 a := 0;
+		i32 c := 0;
+
+		c := 1;
 
 		for i32 b := 1, 10, 1 {
-			c := 1 | 2 & ~3
+			c := 1;
+			c := 1 | 2;
+			c := 1 | 2 & 3;
+			c := 1 | 2 & ~3;
 		}
 	}
 }
 
 # This is a function
-func main(i32 argc, ptr argv) {
-	var asdf {
-		f64 a := 0.0
-	}
+func main() {
+	f64 a := 0.0;
 	while 1 & 2 | 5 ^ 5 {
-		break
-		next 1
+		break;
+		next 1;
 	}
 	match a {
 		1 => {
-			a := 1
+			a := 1;
 		}
 		2 => {
-			a := 2
+			a := 2;
 		}
 		3 => {
-			a := 3
+			a := 3;
 		}
 	}
 	if 4 + 2 & 3 | 1 {
-		a := 0
+		a := 0;
 	}
 
 	# This is a function call
-	call()
+	call();
 }
 
 # This is a variable
-var qwer {
-	str hi := "Hello, world!"
-}
+str hi := "Hello, world!";
